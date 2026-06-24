@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Timeline OS - High Density Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+
+        /* 1. VARIABEL & RESET */
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success: #4ade80;
+            --warning: #facc15;
+            --danger: #f87171;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 30px 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* 2. HEADER & NAVIGATION */
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 { 
+            color: var(--accent-color); 
+            font-size: 2.3rem; 
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        header p { color: var(--text-muted); font-size: 1rem; }
+
+        .navbar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 10px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .navbar a {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .navbar a:hover, .navbar a.active {
+            color: var(--bg-color);
+            background-color: var(--accent-color);
+        }
+
+        /* 3. MAIN LAYOUT */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1.8fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 968px) {
+            .main-layout { grid-template-columns: 1fr; }
+        }
+
+        .space-y { display: flex; flex-direction: column; gap: 25px; }
+
+        /* 4. CARD COMPONENT */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            border-left: 4px solid var(--accent-color);
+            padding-left: 10px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            color: var(--text-main);
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        /* 5. FORM ELEMENTS */
+        .input-group { margin-bottom: 16px; }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: #0f172a;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        select:focus, input:focus, textarea:focus { border-color: var(--accent-color); }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 8px;
+            background-color: var(--accent-color);
+            color: #0f172a;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        button:hover { background-color: var(--accent-hover); }
+
+        /* 6. TELEMETRI */
+        .status-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .status-box {
+            background: #0f172a;
+            padding: 15px 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .status-box label { color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+        .status-val { font-size: 1.5rem; font-weight: 800; margin-top: 5px; }
+
+        /* 7. TIMELINE VISUALIZATION */
+        .timeline {
+            position: relative;
+            border-left: 2px solid var(--border-color);
+            padding-left: 24px;
+            margin-left: 10px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .timeline-item h3 { font-size: 1.1rem; margin: 10px 0 8px 0; }
+        .timeline-item p { color: var(--text-muted); font-size: 0.9rem; }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -31px;
+            top: 23px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            box-shadow: 0 0 0 4px var(--card-bg);
+        }
+
+        .time-badge {
+            font-size: 0.75rem;
+            background-color: #1e293b;
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: var(--accent-color);
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .intervention-box {
+            background-color: rgba(56, 189, 248, 0.03);
+            border: 1px dashed var(--accent-color);
+            border-radius: 10px;
+            padding: 18px;
+            margin-top: 20px;
+        }
+
+        /* 8. LIST DENGAN GAYA UNTUK MENU GEJALA & KONTAK */
+        .list-item {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 12px;
+        }
+        .list-item h4 { color: var(--accent-color); margin-bottom: 5px; }
+        .badge-danger { background: rgba(248, 113, 113, 0.1); color: var(--danger); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .badge-info { background: rgba(56, 189, 248, 0.1); color: var(--accent-color); padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+
+        /* Sembunyikan bagian halaman secara default (Kecuali Beranda) */
+        .page-section { display: none; }
+        .page-section.active-section { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Life Timeline OS ⏳</h1>
+        <p>Personal Navigator & Decision Support System</p>
+    </header>
+
+    <div class="navbar">
+        <a onclick="switchPage('beranda')" id="nav-beranda" class="active">🏠 Dashboard</a>
+        <a onclick="switchPage('gejala')" id="nav-gejala">⚠️ Deteksi Gejala</a>
+        <a onclick="switchPage('kontak')" id="nav-kontak">📞 Emergency Contact</a>
+        <a onclick="switchPage('saran')" id="nav-saran">💬 Beri Saran</a>
+    </div>
+
+    <div id="page-beranda" class="page-section active-section">
+        <div class="main-layout">
+            <div class="space-y">
+                <div class="card">
+                    <h2>🎛️ Input Variabel Hidup Hari Ini</h2>
+                    <div class="input-group">
+                        <label for="career">1. Target Utama Karier</label>
+                        <select id="career">
+                            <option value="startup">Founder Startup / Bikin Bisnis Sendiri</option>
+                            <option value="corporate">Mengejar Posisi Eksekutif di Korporat</option>
+                            <option value="freelance">Digital Nomad / Freelancer Internasional</option>
+                            <option value="pns">Abdi Negara / PNS / BUMN</option>
+                            <option value="academic">Peneliti / Dosen Profesional</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="academic-habit">2. Pola & Kebiasaan Akademik</label>
+                        <select id="academic-habit">
+                            <option value="ambis">Ambis: Belajar tiap hari, ikut lomba, IPK &gt;3.7</option>
+                            <option value="balance">Seimbang: Kuliah aman, aktif organisasi/UKM</option>
+                            <option value="sks">SKS: Sistem Kebut Semalam, yang penting lulus</option>
+                            <option value="prokrastinasi">Pasrah: Sering titip absen, tugas mepet deadline</option>
+                            <option value="sertifikasi">Praktis: Fokus ambil sertifikasi luar</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="sleep-health">3. Pola Tidur & Kesehatan Fisik</label>
+                        <select id="sleep-health">
+                            <option value="perfect">Konsisten tidur 7-8 jam, olahraga 3x seminggu</option>
+                            <option value="average">Tidur 6 jam, jarang olahraga tapi jaga makan</option>
+                            <option value="begadang">Sering begadang demi tugas/proyekan</option>
+                            <option value="scrolling">Insomnia akibat doom-scrolling medsos</option>
+                            <option value="chaos">Pola acak: Sering skip makan, bergantung pada kopi</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="money-habit">4. Manajemen Finansial</label>
+                        <select id="money-habit">
+                            <option value="investor">Disiplin: Sisihkan 30% di awal untuk investasi</option>
+                            <option value="normal">Standar: Belanja seperlunya, sisa baru ditabung</option>
+                            <option value="fomo">FOMO: Sering nongkrong mahal & ikuti tren</option>
+                            <option value="paylater">Gali Lubang: Sering pakai Paylater</option>
+                            <option value="survival">Pas-pasan: Uang saku habis di tengah bulan</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="social-mental">5. Lingkungan Sosial & Mental</label>
+                        <select id="social-mental">
+                            <option value="supportive">Punya circle suportif, relasi luas, mental tangguh</option>
+                            <option value="introvert">Fokus diri sendiri, circle kecil tapi berkualitas</option>
+                            <option value="toxic">Terjebak circle toxic/drama, sering merasa insecure</option>
+                            <option value="overwork">Hustle Culture: Tekanan tinggi, sering cemas & burnout</option>
+                            <option value="apatis">Apatis: Kurang bersosialisasi, tidak peduli networking</option>
+                        </select>
+                    </div>
+
+                    <button onclick="hitungNavigasi()">Kalkulasi Ulang Rute Hidup</button>
+                </div>
+
+                <div class="card">
+                    <h2>📈 Telemetri Kondisi Riil</h2>
+                    <div class="status-container">
+                        <div class="status-box">
+                            <label>Dompet</label>
+                            <div class="status-val" id="m-fin">100%</div>
+                        </div>
+                        <div class="status-box">
+                            <label>Energi/Fisik</label>
+                            <div class="status-val" id="m-health">100%</div>
+                        </div>
+                        <div class="status-box">
+                            <label>Daya Saing</label>
+                            <div class="status-val" id="m-career">100%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>🗺️ Live GPS Re-routing Masa Depan</h2>
+                <div class="timeline" id="output-timeline"></div>
+                <div class="intervention-box" id="output-intervention"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-gejala" class="page-section">
+        <div class="card">
+            <h2>⚠️ Analisis Gejala Malfungsi Sistem Hidup</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Jika kamu merasakan tanda-tanda di bawah ini, berarti algoritma rute hidupmu sedang mengalami anomali:</p>
+            
+            <div class="list-item">
+                <span class="badge-danger">Krisis Kesehatan Mental</span>
+                <h4>1. Brain Fog & Burnout Akut</h4>
+                <p>Gejala: Sering menatap layar kosong selama berjam-jam, sulit fokus saat membaca materi kuliah, dan merasa lelah luar biasa meskipun baru bangun tidur.</p>
+            </div>
+
+            <div class="list-item">
+                <span class="badge-danger">Krisis Finansial</span>
+                <h4>2. Sindrom "Tanggal Tua" Prematur</h4>
+                <p>Gejala: Saldo rekening sudah menyentuh batas kritis pada minggu kedua bulan berjalan karena terlalu impulsif membeli barang/nongkrong di awal bulan.</p>
+            </div>
+
+            <div class="list-item">
+                <span class="badge-danger">Krisis Akademik</span>
+                <h4>3. Prokrastinasi Kronis (Deadliner)</h4>
+                <p>Gejala: Baru mulai mengetik baris kode atau tugas paper 2 jam sebelum batas waktu pengumpulan di portal kampus berakhir, disertai detak jantung tidak stabil.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-kontak" class="page-section">
+        <div class="card">
+            <h2>📞 Kontak Darurat Pengembalian Jalur (Intervensi Krisis)</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Jika telemetri hidupmu menunjukkan indikator <span style="color: var(--danger); font-weight: bold;">Merah</span>, segera hubungi atau akses jalur bantuan berikut:</p>
+            
+            <div class="list-item">
+                <span class="badge-info">Kesehatan & Mental</span>
+                <h4>Pusat Konseling Layanan Mahasiswa Kampus</h4>
+                <p>Membantu memulihkan tingkat kestabilan emosional akibat stres tugas akhir atau tekanan sosial. (Ruang Kemahasiswaan Gedung A / Ekstensi Telepon: 119)</p>
+            </div>
+
+            <div class="list-item">
+                <span class="badge-info">Akademik & Coding</span>
+                <h4>Forum Asisten Praktikum & StackOverflow Group</h4>
+                <p>Tempat bertanya saat kodingan *error* berhari-hari agar terhindar dari gejala stres akademis kronis.</p>
+            </div>
+
+            <div class="list-item">
+                <span class="badge-info">Pengembangan Diri</span>
+                <h4>Dosen Pembimbing Akademik (PA)</h4>
+                <p>Gunakan hakmu untuk berkonsultasi mengenai strategi pengambilan SKS, magang industri, dan arah karier ke depan.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-saran" class="page-section">
+        <div class="card">
+            <h2>💬 Kotak Saran Pengembang Sistem (Feedback Form)</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Bantu kami menyempurnakan kalkulasi algoritma *Life Timeline OS* agar pelacakan masa depan berjalan lebih presisi.</p>
+            
+            <form onsubmit="alert('Saran berhasil direkam ke dalam database simulasi!'); return false;">
+                <div class="input-group">
+                    <label>Nama Pengguna / ID Mahasiswa</label>
+                    <input type="text" placeholder="Masukkan nama atau anonim" required>
+                </div>
+                <div class="input-group">
+                    <label>Kategori Saran</label>
+                    <select>
+                        <option>Akurasi Prediksi Rute Masa Depan</option>
+                        <option>Penambahan Variabel Input Baru</option>
+                        <option>Perbaikan Antarmuka (UI/UX) Dashboard</option>
+                        <option>Lainnya</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Detail Masukan / Kritik Konstruktif</label>
+                    <textarea rows="5" placeholder="Tuliskan saran perbaikan di sini secara mendetail..." required></textarea>
+                </div>
+                <button type="submit">Kirim Saran Sistem</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // FUNGSI JAVASCRIPT UNTUK PINDAH HALAMAN (TABS MENU)
+    function switchPage(pageId) {
+        // 1. Sembunyikan semua section halaman
+        const sections = document.querySelectorAll('.page-section');
+        sections.forEach(section => {
+            section.classList.remove('active-section');
+        });
+
+        // 2. Hilangkan status aktif pada semua tombol navigasi
+        const navLinks = document.querySelectorAll('.navbar a');
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+
+        // 3. Tampilkan section yang dipilih & beri status aktif pada tombolnya
+        document.getElementById('page-' + pageId).classList.add('active-section');
+        document.getElementById('nav-' + pageId).classList.add('active');
+    }
+
+    // LOGIKA PERHITUNGAN GPS HIDUP (ALGORITMA UTAMAMU)
+    window.onload = function() { hitungNavigasi(); };
+
+    function hitungNavigasi() {
+        const career = document.getElementById('career').value;
+        const academic = document.getElementById('academic-habit').value;
+        const sleep = document.getElementById('sleep-health').value;
+        const money = document.getElementById('money-habit').value;
+        const social = document.getElementById('social-mental').value;
+
+        let fin = 80; let health = 80; let comp = 70;
+
+        if(academic === 'ambis' || academic === 'sertifikasi') comp += 20;
+        if(academic === 'sks' || academic === 'prokrastinasi') comp -= 25;
+        if(sleep === 'perfect') health += 20;
+        if(sleep === 'begadang' || sleep === 'scrolling' || sleep === 'chaos') { health -= 40; comp -= 10; }
+        if(money === 'investor') fin += 20;
+        if(money === 'fomo' || money === 'paylater') fin -= 50;
+        if(social === 'overwork') { health -= 10; comp += 10; }
+        if(social === 'toxic') { health -= 15; fin -= 10; }
+
+        fin = Math.max(10, Math.min(100, fin));
+        health = Math.max(10, Math.min(100, health));
+        comp = Math.max(10, Math.min(100, comp));
+
+        document.getElementById('m-fin').innerText = fin + "%";
+        document.getElementById('m-health').innerText = health + "%";
+        document.getElementById('m-career').innerText = comp + "%";
+
+        setColor('m-fin', fin); setColor('m-health', health); setColor('m-career', comp);
+
+        let tLine = ''; let iText = '';
+
+        if(health <= 50) {
+            tLine = `
+                <div class="timeline-item" style="border-left: 2px solid var(--danger);">
+                    <span class="time-badge" style="background:var(--danger); color:#0f172a; border:none;">REROUTING: JALUR KESEHATAN AMBLES</span>
+                    <h3>Fase Drop Total (6 - 12 Bulan ke Depan)</h3>
+                    <p>Tubuhmu mogok. Efek sering begadang dan pola makan berantakan bikin kamu gampang sakit, sering <i>brain fog</i> (otak lemot), dan fokus kuliah bubar jalan. Semua ambisimu terpaksa direm total.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="time-badge">Fase Pemulihan</span>
+                    <h3>Bayar Utang Kesehatan</h3>
+                    <p>Rencana lulus cepat atau membangun karier terpaksa mundur 1 tahun cuma buat balikin kondisi fisik dan mentalmu ke level normal.</p>
+                </div>
+            `;
+            iText = "📢 <b>Suara GPS:</b> <i>\"Putar balik! Tubuhmu bukan mesin. Kalau kamu terus-terusan begadang dan abai makan, target jadi profesional papan atas bakal diganti dengan rute rumah sakit. Perbaiki jam tidur minggu ini sebelum sistem drop permanen!\"</i>";
+        } 
+        else if (fin <= 40) {
+            tLine = `
+                <div class="timeline-item" style="border-left: 2px solid var(--warning);">
+                    <span class="time-badge" style="background:var(--warning); color:#0f172a; border:none;">REROUTING: JALUR KRISIS DOMPET</span>
+                    <h3>Fase Terjebak Tagihan (Tahun 1 - 2)</h3>
+                    <p>Gaya hidup FOMO dan jebakan Paylater sukses menahan modal masa depanmu di angka nol. Kamu gak punya uang buat ikut sertifikasi, kursus berbayar, atau modal usaha.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="time-badge">Tahun 3+</span>
+                    <h3>Kerja Asal Kerja Demi Bayar Utang</h3>
+                    <p>Saat lulus nanti, kamu bakal terpaksa ambil pekerjaan apa aja yang penting menghasilkan uang cepat buat nutupin utang, bukan pekerjaan yang sesuai <i>passion</i> atau target kariermu.</p>
+                </div>
+            `;
+            iText = "📢 <b>Suara GPS:</b> <i>\"Bahaya, rute di depan macet total gara-gara tagihan. Kamu gak bisa bangun bisnis atau karier keren kalau modal awal habis buat gaya hidup. Matikan fitur Paylater-mu sekarang, beralih ke jalur hemat sebelum dompetmu mati suri!\"</i>";
+        }
+        else if (comp <= 50) {
+            tLine = `
+                <div class="timeline-item" style="border-left: 2px solid var(--warning);">
+                    <span class="time-badge" style="background:var(--warning); color:#0f172a; border:none;">REROUTING: JALUR PENGANGGURAN TERBUKA</span>
+                    <h3>Fase Kaget Dunia Kerja (Tahun 1 Setelah Lulus)</h3>
+                    <p>IPK pas-pasan dan gak punya keahlian khusus bikin CV kamu langsung mental di HRD. Kamu kalah saing sama lulusan lain yang punya portofolio dan sertifikasi industri.</p>
+                </div>
+            `;
+            iText = "📢 <b>Suara GPS:</b> <i>\"Rute karier yang kamu pilih memerlukan kompetensi tinggi, tapi kebiasaan SKS membuatmu salah arah. Segera ambil sertifikasi luar atau aktif di proyek nyata. Kalau tidak, kamu akan tersasar di fase pencari kerja abadi.\"</i>";
+        }
+        else {
+            tLine = `
+                <div class="timeline-item">
+                    <span class="time-badge">Tahun 1 - 2</span>
+                    <h3>Fase Investasi Diri</h3>
+                    <p>Kombinasi disiplin finansial dan belajar konsisten bikin fondasimu kuat banget. Kamu mulai dilirik untuk magang di tempat prestisius.</p>
+                </div>
+                <div class="timeline-item">
+                    <span class="time-badge">Tahun 3 - 5</span>
+                    <h3>Destinasi Tercapai</h3>
+                    <p>Kamu sukses mendarat di target kariermu sebagai profesional/pengusaha dengan kondisi finansial sehat dan mental yang stabil. Risiko stres berada di batas aman.</p>
+                </div>
+            `;
+            iText = "📢 <b>Suara GPS:</b> <i>\"Jalur hijau terdeteksi! Keputusan harianmu seimbang dan berada di rute paling efisien menuju target hidupmu. Pertahankan kecepatan dan ritme ini, kamu bakal sampai di tujuan tepat waktu.\"</i>";
+        }
+
+        document.getElementById('output-timeline').innerHTML = tLine;
+        document.getElementById('output-intervention').innerHTML = iText;
+    }
+
+    function setColor(id, val) {
+        const el = document.getElementById(id);
+        if(val >= 70) el.style.color = 'var(--success)';
+        else if(val >= 50) el.style.color = 'var(--warning)';
+        else el.style.color = 'var(--danger)';
+    }
+</script>
+
+</body>
+</html>
